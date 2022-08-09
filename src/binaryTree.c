@@ -1,6 +1,7 @@
 #include "../include/binaryTree.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 static void printTree(BinaryTree *tree);
 
@@ -8,6 +9,7 @@ struct binaryTree
 {
     int value;
     char c;
+    bitmap *bits;
     struct binaryTree *right;
     struct binaryTree *left;
 };
@@ -17,6 +19,7 @@ BinaryTree *Constructor_binaryTreeLeaf(int value, char c)
     BinaryTree *new = malloc(sizeof(BinaryTree));
     new->value = value;
     new->c = c;
+    new->bits = bitmapInit(20);
     new->right = NULL;
     new->left = NULL;
     return new;
@@ -25,7 +28,8 @@ BinaryTree *Constructor_binaryTree(int value, BinaryTree *left, BinaryTree *righ
 {
     BinaryTree *new = malloc(sizeof(BinaryTree));
     new->value = value;
-    new->c = 'c';
+    new->c = '-';
+    new->bits = bitmapInit(20);
     new->right = right;
     new->left = left;
     return new;
@@ -52,11 +56,15 @@ void print_binaryTree(BinaryTree *tree)
             printf("%c\n", tree->c);
 
         if (tree->left != NULL)
+        {
             printf("0");
-        print_binaryTree(tree->left);
+            print_binaryTree(tree->left);
+        }
         if (tree->right != NULL)
+        {
             printf("1");
-        print_binaryTree(tree->right);
+            print_binaryTree(tree->right);
+        }
     }
 }
 
@@ -66,6 +74,43 @@ void printGraph_binaryTree(BinaryTree *tree)
     printTree(tree);
     printf("}\n");
     return;
+}
+
+void fillBits_binaryTree(BinaryTree *tree)
+{
+    if (tree != NULL)
+    {
+        if (tree->left == NULL && tree->right == NULL)
+        {
+            int i;
+            for (i = 0; i < bitmapGetLength(tree->bits); i++)
+            {
+                printf("%0x", bitmapGetBit(tree->bits, i));
+            }
+            printf("%c\n", tree->c);
+        }
+
+        if (tree->left != NULL)
+        {
+            int i;
+            for (i = 0; i < bitmapGetLength(tree->bits); i++)
+            {
+                bitmapAppendLeastSignificantBit(tree->left->bits, bitmapGetBit(tree->bits, i));
+            }
+            bitmapAppendLeastSignificantBit(tree->left->bits, 0);
+            fillBits_binaryTree(tree->left);
+        }
+        if (tree->right != NULL)
+        {
+            int i;
+            for (i = 0; i < bitmapGetLength(tree->bits); i++)
+            {
+                bitmapAppendLeastSignificantBit(tree->right->bits, bitmapGetBit(tree->bits, i));
+            }
+            bitmapAppendLeastSignificantBit(tree->right->bits, 1);
+            fillBits_binaryTree(tree->right);
+        }
+    }
 }
 
 static void printTree(BinaryTree *tree)
@@ -94,6 +139,11 @@ int getValue_binaryTree(BinaryTree *tree)
 char getChar_binaryTree(BinaryTree *tree)
 {
     return tree->c;
+}
+
+bitmap *getBits_binaryTree(BinaryTree *tree)
+{
+    return tree->bits;
 }
 
 BinaryTree *getLeft_binaryTree(BinaryTree *tree)

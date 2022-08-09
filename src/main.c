@@ -26,6 +26,7 @@ int main(int argc, char *argv[])
         printf("ERRO!\n");
         return 1;
     }
+
     /*
     BinaryTree *a = Constructor_binaryTreeLeaf(1, 'a'), *b = Constructor_binaryTreeLeaf(2, 'b'), *c = Constructor_binaryTreeLeaf(3, 'c'), *d = Constructor_binaryTreeLeaf(4, 'd'), *e = Constructor_binaryTreeLeaf(5, 'e'), *f = Constructor_binaryTreeLeaf(6, 'f');
 

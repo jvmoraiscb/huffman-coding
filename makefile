@@ -12,7 +12,7 @@ OBJ_PATH_FILES = $(patsubst $(SRC)%,$(OBJ)%,$(C_FILES))
 OBJ_FILES      = $(patsubst %.c,%.o,$(OBJ_PATH_FILES))
 
 all: create_dir $(OBJ_FILES) create_final_progam
-test: clean all run
+# test: clean all run
 
 create_final_progam: $(BIN)/$(NAME_PROGRAM)
 
@@ -39,13 +39,27 @@ create_dir:
 	@ mkdir $(BIN)
 
 # rule to run the final program
-run: 
+#run: 
+#	@ echo "Running $(BIN)/$(NAME_PROGRAM)"
+#	@ ./$(BIN)/$(NAME_PROGRAM) $(file)
+
+encoder:
+	@ make clean
+	@ make
 	@ echo "Running $(BIN)/$(NAME_PROGRAM)"
-	@ ./$(BIN)/$(NAME_PROGRAM)
+	@ clear
+	@ ./$(BIN)/$(NAME_PROGRAM) -encoder $(file)
+
+decoder:
+	@ make clean
+	@ make
+	@ echo "Running $(BIN)/$(NAME_PROGRAM)"
+	@ clear
+	@ ./$(BIN)/$(NAME_PROGRAM) -decoder $(file)
 
 valgrind: 
 	@ echo "Running valgrind on $(BIN)/$(NAME_PROGRAM)"
-	@ valgrind ./$(BIN)/$(NAME_PROGRAM)
+	@ valgrind ./$(BIN)/$(NAME_PROGRAM) $(mode) $(file)
 
 clean:
 	@ echo "Removing temporary files..."
