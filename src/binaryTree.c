@@ -3,6 +3,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#define MAX_BITS 32
+
 static void printTree(BinaryTree *tree);
 
 struct binaryTree
@@ -19,7 +21,7 @@ BinaryTree *Constructor_binaryTreeLeaf(int value, char c)
     BinaryTree *new = malloc(sizeof(BinaryTree));
     new->value = value;
     new->c = c;
-    new->bits = bitmapInit(20);
+    new->bits = bitmapInit(MAX_BITS);
     new->right = NULL;
     new->left = NULL;
     return new;
@@ -29,7 +31,7 @@ BinaryTree *Constructor_binaryTree(int value, BinaryTree *left, BinaryTree *righ
     BinaryTree *new = malloc(sizeof(BinaryTree));
     new->value = value;
     new->c = '-';
-    new->bits = bitmapInit(20);
+    new->bits = bitmapInit(MAX_BITS);
     new->right = right;
     new->left = left;
     return new;
@@ -80,16 +82,6 @@ void fillBits_binaryTree(BinaryTree *tree)
 {
     if (tree != NULL)
     {
-        if (tree->left == NULL && tree->right == NULL)
-        {
-            int i;
-            for (i = 0; i < bitmapGetLength(tree->bits); i++)
-            {
-                printf("%0x", bitmapGetBit(tree->bits, i));
-            }
-            printf("%c\n", tree->c);
-        }
-
         if (tree->left != NULL)
         {
             int i;
