@@ -3,7 +3,7 @@
 #include <string.h>
 #include "../include/binaryTree.h"
 #include "../include/list-binaryTree.h"
-#include "../include/huffman-encoder.h"
+#include "../include/dictionary.h"
 
 int main(int argc, char *argv[])
 {
@@ -14,8 +14,8 @@ int main(int argc, char *argv[])
     }
     if (!strcmp(argv[1], "-encoder"))
     {
-        printf("codificador\n");
-        start(argv[2]);
+        Dictionary *dictionary = constructor_dictionary(argv[2]);
+        print_dictionary(dictionary);
     }
     else if (!strcmp(argv[1], "-decoder"))
     {

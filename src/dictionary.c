@@ -15,11 +15,12 @@ struct dictionary
 };
 
 static void getText(int *ascii, char *file);
-static Word *create_word(char c, bitmap *bits);
-static Dictionary *insert_word(Dictionary *dictionary, char c, bitmap *bits);
+static void fillDictionary(BinaryTree *tree, Dictionary *dictionary);
 
-void start(char *file)
+Dictionary *constructor_dictionary(char *file)
 {
+    Dictionary *dictionary = malloc(sizeof(Dictionary));
+
     int ascii[128] = {0};
     getText(ascii, file);
 
@@ -27,6 +28,8 @@ void start(char *file)
     int i, lenght = 0;
     for (i = 0; i < 128; i++)
     {
+        dictionary->words[i].bits = NULL;
+
         if (ascii[i] > 0)
         {
             list = insert_list(list, Constructor_binaryTreeLeaf(ascii[i], i));
@@ -49,8 +52,26 @@ void start(char *file)
     }
 
     fillBits_binaryTree(getTree_list(list));
+    fillDictionary(getTree_list(list), dictionary);
 
-    Dictionary *dictionary;
+    return dictionary;
+}
+
+void print_dictionary(Dictionary *dictionary)
+{
+
+    int i, j;
+    for (i = 0; i < 128; i++)
+    {
+        if (dictionary->words[i].bits != NULL)
+        {
+            for (j = 0; j < bitmapGetLength(dictionary->words[i].bits); j++)
+            {
+                printf("%0x", bitmapGetBit(dictionary->words[i].bits, j));
+            }
+            printf("%c\n");
+        }
+    }
 }
 
 static void getText(int *ascii, char *file)
@@ -64,11 +85,22 @@ static void getText(int *ascii, char *file)
     fclose(text);
 }
 
-static Word *create_word(char c, bitmap *bits)
+static void fillDictionary(BinaryTree *tree, Dictionary *dictionary)
 {
-    Word *newWord = malloc(sizeof(Word));
-    newWord->c = c;
-    newWord->bits = bits;
-
-    return newWord;
+    if (tree != NULL)
+    {
+        if (getLeft_binaryTree(tree) == NULL && getRight_binaryTree(tree) == NULL)
+        {
+            dictionary->words[getChar_binaryTree(tree)].c = getChar_binaryTree(tree);
+            dictionary->words[getChar_binaryTree(tree)].bits = getBits_binaryTree(tree);
+        }
+        if (getLeft_binaryTree(tree) != NULL)
+        {
+            fillDictionary(getLeft_binaryTree(tree), dictionary);
+        }
+        if (getRight_binaryTree(tree) != NULL)
+        {
+            fillDictionary(getRight_binaryTree(tree), dictionary);
+        }
+    }
 }

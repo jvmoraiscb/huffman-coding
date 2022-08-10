@@ -1,8 +1,9 @@
 #if !defined(DICTIONARY)
 #define DICTIONARY
 
-#include "../include/bitmap.h"
-
 typedef struct dictionary Dictionary;
+
+Dictionary *constructor_dictionary(char *file);
+void print_dictionary(Dictionary *dictionary);
 
 #endif // DICTIONARY
