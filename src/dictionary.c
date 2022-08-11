@@ -2,6 +2,7 @@
 #include "../include/list-binaryTree.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <math.h>
 
 #define MAX_WORDS 256
@@ -22,13 +23,14 @@ struct dictionary
 };
 
 static void getText(int *ascii, char *file);
-//static void printBinCharPad(char c);
+// static void printBinCharPad(char c);
 static void addBinCharPad(char c, bitmap *bitmap);
 static void fillDictionary(BinaryTree *tree, Dictionary *dictionary);
 static bitmap *fillSizeBits(unsigned int sizeBits, unsigned int bits);
-static bitmap *fillBitmap(Dictionary *dictionary);
+static void fillSizeBits2(bitmap *bitmap, unsigned int sizeBits, unsigned int bits);
+static void fillBitmap(Dictionary *dictionary, char *type);
 
-Dictionary *constructor_dictionary(char *file)
+Dictionary *constructor_dictionary(char *file, char *type)
 {
     Dictionary *dictionary = malloc(sizeof(Dictionary));
 
@@ -69,11 +71,12 @@ Dictionary *constructor_dictionary(char *file)
     fillDictionary(getTree_list(list), dictionary);
     dictionary->sizeWords = fillSizeBits(lenght, 8);
     dictionary->sizeFile = fillSizeBits(numberChars, 32);
-    dictionary->bitmap = fillBitmap(dictionary);
+    fillBitmap(dictionary, type);
+
     return dictionary;
 }
 
-void print_dictionary(Dictionary *dictionary)
+void printDictionary(Dictionary *dictionary)
 {
     /*
     int i, j;
@@ -105,10 +108,23 @@ void print_dictionary(Dictionary *dictionary)
         }
     }
     */
-   int i;
-   for(i=0; i<bitmapGetLength(dictionary->bitmap); i++){
-       printf("%0x", bitmapGetBit(dictionary->bitmap, i));
-   }
+    int i;
+    for (i = 0; i < bitmapGetLength(dictionary->bitmap); i++)
+    {
+        printf("%0x", bitmapGetBit(dictionary->bitmap, i));
+    }
+}
+
+int getBitmapSize(Dictionary *dictionary)
+{
+    return bitmapGetLength(dictionary->bitmap);
+}
+
+void printChar(Dictionary *dictionary, FILE *file)
+{
+    // fprintf(file, "%c", bitmapGetContents(dictionary->bitmap)[i]);
+    // fprintf(file, "%s", bitmapGetContents(dictionary->bitmap));
+    fwrite(bitmapGetContents(dictionary->bitmap), 1, bitmapGetLength(dictionary->bitmap) / 8, file);
 }
 
 static void getText(int *ascii, char *file)
@@ -149,7 +165,7 @@ static bitmap *fillSizeBits(unsigned int sizeBits, unsigned int bits)
     bitmap *new = bitmapInit(bits);
 
     int i;
-    for(i=bits-1; i >= 0; i--)
+    for (i = bits - 1; i >= 0; i--)
     {
         if (sizeBits >= pow(2, i))
         {
@@ -163,9 +179,24 @@ static bitmap *fillSizeBits(unsigned int sizeBits, unsigned int bits)
     return new;
 }
 
-static bitmap *fillBitmap(Dictionary *dictionary)
+static void fillSizeBits2(bitmap *bitmap, unsigned int sizeBits, unsigned int bits)
 {
-    int i, j, count = 0;
+    int i;
+    for (i = bits - 1; i >= 0; i--)
+    {
+        if (sizeBits >= pow(2, i))
+        {
+            bitmapAppendLeastSignificantBit(bitmap, 1);
+            sizeBits = sizeBits - pow(2, i);
+        }
+        else
+            bitmapAppendLeastSignificantBit(bitmap, 0);
+    }
+}
+
+static void fillBitmap(Dictionary *dictionary, char *type)
+{
+    int i, j, count = 0, typeBytes = strlen(type);
 
     for (i = 0; i < MAX_WORDS; i++)
     {
@@ -175,12 +206,11 @@ static bitmap *fillBitmap(Dictionary *dictionary)
         }
     }
 
-    bitmap* bitmap = bitmapInit(32 + 8 + count);
+    int sizeOfChars = 8 + count + (3 + typeBytes * 8) + 32;
+    int ignore = 8 - (sizeOfChars % 8);
 
-    for (j = 0; j < 32; j++)
-    {
-        bitmapAppendLeastSignificantBit(bitmap, bitmapGetBit(dictionary->sizeFile, j));
-    }
+    bitmap *bitmap = bitmapInit(sizeOfChars + ignore);
+
     for (j = 0; j < 8; j++)
     {
         bitmapAppendLeastSignificantBit(bitmap, bitmapGetBit(dictionary->sizeWords, j));
@@ -200,7 +230,22 @@ static bitmap *fillBitmap(Dictionary *dictionary)
             addBinCharPad(dictionary->words[i].c, bitmap);
         }
     }
-    return bitmap;
+    fillSizeBits2(bitmap, typeBytes, 3);
+    for (i = 0; i < typeBytes; i++)
+    {
+        addBinCharPad(type[i], bitmap);
+    }
+
+    for (j = 0; j < 32; j++)
+    {
+        bitmapAppendLeastSignificantBit(bitmap, bitmapGetBit(dictionary->sizeFile, j));
+    }
+    for (i = 0; i < ignore; i++)
+    {
+        bitmapAppendLeastSignificantBit(bitmap, 0);
+    }
+
+    dictionary->bitmap = bitmap;
 }
 /*
 static void printBinCharPad(char c)
@@ -213,7 +258,7 @@ static void printBinCharPad(char c)
 }
 */
 
-static void addBinCharPad(char c, bitmap* bitmap)
+static void addBinCharPad(char c, bitmap *bitmap)
 {
     for (int i = 7; i >= 0; --i)
     {
