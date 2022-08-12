@@ -40,6 +40,8 @@ BinaryTree *Destructor_binaryTree(BinaryTree *tree)
 {
     if (tree != NULL)
     {
+        if (tree->left != NULL || tree->right) // not leaf
+            bitmapLibera(tree->bits);
         if (tree->left != NULL)
             Destructor_binaryTree(tree->left);
         if (tree->right != NULL)

@@ -2,12 +2,14 @@
 #define DICTIONARY
 
 #include <stdio.h>
+#include "../include/bitmap.h"
 
 typedef struct dictionary Dictionary;
 
 Dictionary *constructor_dictionary(char *file, char *type);
+void destructor_dictionary(Dictionary *dictionary);
 void printDictionary(Dictionary *dictionary);
-int getBitmapSize(Dictionary *dictionary);
-void printChar(Dictionary *dictionary, FILE *file);
+void fillBitmap(bitmap *bitmap, Dictionary *dictionary, char *type);
+bitmap *getCharFromDictionary(Dictionary *dictionary, char c);
 
 #endif // DICTIONARY
