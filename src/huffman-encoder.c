@@ -59,6 +59,7 @@ void huffman_encoder(char *file)
         bitmapAppendLeastSignificantBit(map, 0);
     fwrite(bitmapGetContents(map), 1, bitmapGetLength(map) / 8, file_comp);
     bitmapLibera(map);
+    bitmapLibera(overflow);
 
     fclose(file_original);
     fclose(file_comp);
