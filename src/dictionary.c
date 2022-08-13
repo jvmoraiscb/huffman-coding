@@ -65,6 +65,7 @@ Dictionary *constructor_dictionary(char *file, char *type)
         list = remove_list(list, second);
     }
 
+    print_binaryTree(getTree_list(list));
     fillBits_binaryTree(getTree_list(list));
     fillDictionary(getTree_list(list), dictionary);
     Destructor_binaryTree(getTree_list(list));
@@ -182,7 +183,12 @@ void fillBitmap(bitmap *bitmap, Dictionary *dictionary, char *type)
         }
     }
 
-    // int sizeOfChars = 8 + count + (3 + typeBytes * 8) + 32;
+    int sizeOfChars = 16 + 8 + count + (3 + typeBytes * 8) + 32;
+    int ignore = 8 - sizeOfChars % 8;
+
+    printf("--%d--\n", sizeOfChars + ignore);
+
+    fillSizeBits2(bitmap, sizeOfChars + ignore, 16);
 
     for (j = 0; j < 8; j++)
     {
@@ -213,6 +219,8 @@ void fillBitmap(bitmap *bitmap, Dictionary *dictionary, char *type)
     {
         bitmapAppendLeastSignificantBit(bitmap, bitmapGetBit(dictionary->sizeFile, j));
     }
+    for (i = 0; i < ignore; i++)
+        bitmapAppendLeastSignificantBit(bitmap, 0);
 }
 
 static void addBinCharPad(char c, bitmap *bitmap)

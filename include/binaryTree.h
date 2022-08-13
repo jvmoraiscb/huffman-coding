@@ -13,6 +13,9 @@ char getChar_binaryTree(BinaryTree *tree);
 bitmap *getBits_binaryTree(BinaryTree *tree);
 BinaryTree *getLeft_binaryTree(BinaryTree *tree);
 BinaryTree *getRight_binaryTree(BinaryTree *tree);
+void setLeft_binaryTree(BinaryTree *tree, BinaryTree *left);
+void setRight_binaryTree(BinaryTree *tree, BinaryTree *right);
 void fillBits_binaryTree(BinaryTree *tree);
+void print_binaryTree(BinaryTree *tree);
 
 #endif // BINARY_TREE

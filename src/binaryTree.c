@@ -149,3 +149,12 @@ BinaryTree *getRight_binaryTree(BinaryTree *tree)
 {
     return tree->right;
 }
+
+void setLeft_binaryTree(BinaryTree *tree, BinaryTree *left)
+{
+    tree->left = left;
+}
+void setRight_binaryTree(BinaryTree *tree, BinaryTree *right)
+{
+    tree->right = right;
+}
