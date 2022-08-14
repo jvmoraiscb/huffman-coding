@@ -28,6 +28,7 @@ void huffman_encoder(char *file)
     bitmap *overflow = bitmapInit(50);
 
     fillBitmap(map, dictionary, fileType);
+
     char c;
     FILE *file_original = fopen(file, "r");
     FILE *file_comp = fopen(fileName, "w");

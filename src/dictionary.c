@@ -122,6 +122,7 @@ static void fillDictionary(BinaryTree *tree, Dictionary *dictionary)
         if (getLeft_binaryTree(tree) == NULL && getRight_binaryTree(tree) == NULL)
         {
             bitmap *sizeBits = fillSizeBits(bitmapGetLength(getBits_binaryTree(tree)), 5);
+
             dictionary->words[(int)getChar_binaryTree(tree)].sizeBits = sizeBits;
             dictionary->words[(int)getChar_binaryTree(tree)].c = getChar_binaryTree(tree);
             dictionary->words[(int)getChar_binaryTree(tree)].bits = getBits_binaryTree(tree);
@@ -185,8 +186,6 @@ void fillBitmap(bitmap *bitmap, Dictionary *dictionary, char *type)
 
     int sizeOfChars = 16 + 8 + count + (3 + typeBytes * 8) + 32;
     int ignore = 8 - sizeOfChars % 8;
-
-    printf("--%d--\n", sizeOfChars + ignore);
 
     fillSizeBits2(bitmap, sizeOfChars + ignore, 16);
 
