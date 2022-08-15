@@ -57,7 +57,9 @@ void print_binaryTree(BinaryTree *tree)
     if (tree != NULL)
     {
         if (tree->right == NULL && tree->left == NULL)
-            printf("--%.3d--\n", tree->c);
+        {
+            printf("--%.3d--(%d)\n", tree->c, bitmapGetLength(tree->bits));
+        }
 
         if (tree->left != NULL)
         {

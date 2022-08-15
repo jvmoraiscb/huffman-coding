@@ -28,6 +28,10 @@ void huffman_encoder(char *file)
     bitmap *overflow = bitmapInit(50);
 
     fillBitmap(map, dictionary, fileType);
+    for (int i = 0; i < bitmapGetLength(map); i++)
+    {
+        printf("%d", bitmapGetBit(map, i));
+    }
 
     unsigned char c;
     FILE *file_original = fopen(file, "r");

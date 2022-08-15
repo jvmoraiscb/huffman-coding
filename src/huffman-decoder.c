@@ -15,7 +15,7 @@ void huffman_decoder(char *file)
 {
     int i, j;
     char fileName[100];
-
+    printf("1\n");
     char fileTemp[100];
     strcpy(fileTemp, file);
     char *pt;
@@ -25,7 +25,7 @@ void huffman_decoder(char *file)
 
     bitmap *map = bitmapInit(pow(2, 20)); // at least 1mb to read
     bitmap *overflow = bitmapInit(50);
-
+    printf("2\n");
     FILE *file_comp = fopen(file, "rb");
     FILE *file_original = NULL;
     unsigned char c;
@@ -37,6 +37,7 @@ void huffman_decoder(char *file)
         addBits(dictionarySize, NULL, c_bits);
         bitmapLibera(c_bits);
     }
+    printf("3\n");
     int dictionarySizeInt = getIntFromBits(dictionarySize, 0, 16);
     bitmap *dictionary = bitmapInit(dictionarySizeInt - 16);
     // printf("--%d--\n", bitmapGetMaxSize(dictionary));
@@ -49,18 +50,14 @@ void huffman_decoder(char *file)
     }
     BinaryTree *tree = Constructor_binaryTree(0, NULL, NULL);
     BinaryTree *tree_aux = tree;
-    int treeSizeInt = getIntFromBits(dictionary, 0, 8);
-    // printf("%d\n", treeSizeInt);
-    int position = 8;
-
-    /*
+    int treeSizeInt = getIntFromBits(dictionary, 0, 9);
+    printf("%d\n%d\n", dictionarySizeInt, treeSizeInt);
+    int position = 9;
     for (i = 0; i < dictionarySizeInt - 16; i++)
     {
         printf("%d", bitmapGetBit(dictionary, i));
     }
     printf("\n");
-    */
-
     for (i = 0; i < treeSizeInt; i++)
     {
         // printf("%d\n", position);
@@ -89,19 +86,20 @@ void huffman_decoder(char *file)
         if (bitmapGetBit(dictionary, position) == 1)
         {
             position++;
-            // printf("%c\n", getIntFromBits(dictionary, position, 8));
+            printf("-%d-\n", getIntFromBits(dictionary, position, 8));
             setRight_binaryTree(tree_aux, Constructor_binaryTreeLeaf(1, getIntFromBits(dictionary, position, 8)));
         }
         else
         {
             position++;
-            // printf("%c\n", getIntFromBits(dictionary, position, 8));
+            printf("-%d-\n", getIntFromBits(dictionary, position, 8));
             setLeft_binaryTree(tree_aux, Constructor_binaryTreeLeaf(1, getIntFromBits(dictionary, position, 8)));
         }
         position += 8;
         // printf("%d\n", position);
     }
-    // print_binaryTree(tree);
+    printf("6\n");
+    print_binaryTree(tree);
 
     strcat(fileName, ".");
     int sizeBitsType = getIntFromBits(dictionary, position, 3);
@@ -113,9 +111,11 @@ void huffman_decoder(char *file)
         strcat(fileName, cc);
         position += 8;
     }
-    file_original = fopen(fileName, "w");
+    printf("%s\n", fileName);
+    file_original = fopen(fileName, "wb");
 
     int leafs = 0, leafsMax = getIntFromBits(dictionary, position, 32);
+    printf("%d\n", leafsMax);
     tree_aux = tree;
     while (fread(&c, sizeof(unsigned char), 1, file_comp) == 1)
     {
@@ -197,7 +197,10 @@ static int writeText(FILE *file, bitmap *map, BinaryTree *tree_aux, BinaryTree *
         if (getValue_binaryTree(tree_aux) == 1)
         {
             if (leafs < leafsMax)
-                fprintf(file, "%c", getChar_binaryTree(tree_aux));
+            {
+                char c = getChar_binaryTree(tree_aux);
+                fwrite(&c, sizeof(unsigned char), 1, file);
+            }
             leafs++;
             tree_aux = tree;
         }

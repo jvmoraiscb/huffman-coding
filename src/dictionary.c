@@ -9,7 +9,7 @@
 
 typedef struct word
 {
-    char c;
+    unsigned char c;
     bitmap *bits;
     bitmap *sizeBits;
 } Word;
@@ -30,12 +30,10 @@ void fillBitmap(bitmap *bitmap, Dictionary *dictionary, char *type);
 
 Dictionary *constructor_dictionary(char *file, char *type)
 {
-    printf("1\n");
     Dictionary *dictionary = malloc(sizeof(Dictionary));
 
     int ascii[MAX_WORDS] = {0};
     getText(ascii, file);
-    printf("2\n");
 
     List *list = constructor_list();
     int i, lenght = 0;
@@ -52,7 +50,6 @@ Dictionary *constructor_dictionary(char *file, char *type)
             numberChars = numberChars + ascii[i];
         }
     }
-    printf("3\n");
 
     while (last_list(list) == 0)
     {
@@ -67,21 +64,13 @@ Dictionary *constructor_dictionary(char *file, char *type)
         list = remove_list(list, first);
         list = remove_list(list, second);
     }
-    printf("4\n");
-
-    print_binaryTree(getTree_list(list));
     fillBits_binaryTree(getTree_list(list));
-    print_binaryTree(getTree_list(list));
-    printf("5\n");
     fillDictionary(getTree_list(list), dictionary);
-    printf("6\n");
+    print_binaryTree(getTree_list(list));
     Destructor_binaryTree(getTree_list(list));
-    printf("7\n");
     destructor_list(list);
-    printf("8\n");
-    dictionary->sizeWords = fillSizeBits(lenght, 8);
+    dictionary->sizeWords = fillSizeBits(lenght, 9);
     dictionary->sizeFile = fillSizeBits(numberChars, 32);
-    printf("9\n");
 
     return dictionary;
 }
@@ -127,20 +116,13 @@ static void getText(int *ascii, char *file)
 
 static void fillDictionary(BinaryTree *tree, Dictionary *dictionary)
 {
-    print_binaryTree(tree);
     if (tree != NULL)
     {
-        printf("5.1\n");
-        printf("((%.3d))\n", getChar_binaryTree(tree));
         if (getLeft_binaryTree(tree) == NULL && getRight_binaryTree(tree) == NULL && getChar_binaryTree(tree) >= 0)
         {
-            printf("5.1.1\n");
             bitmap *sizeBits = fillSizeBits(bitmapGetLength(getBits_binaryTree(tree)), 5);
-            printf("5.1.2\n");
             dictionary->words[(unsigned int)getChar_binaryTree(tree)].sizeBits = sizeBits;
-            printf("5.1.3\n");
             dictionary->words[(unsigned int)getChar_binaryTree(tree)].c = getChar_binaryTree(tree);
-            printf("5.1.4\n");
             dictionary->words[(unsigned int)getChar_binaryTree(tree)].bits = getBits_binaryTree(tree);
         }
         else
@@ -197,12 +179,13 @@ void fillBitmap(bitmap *bitmap, Dictionary *dictionary, char *type)
         }
     }
 
-    int sizeOfChars = 16 + 8 + count + (3 + typeBytes * 8) + 32;
+    int sizeOfChars = 16 + 9 + count + (3 + typeBytes * 8) + 32;
     int ignore = 8 - sizeOfChars % 8;
 
+    printf("%d\n", sizeOfChars + ignore);
     fillSizeBits2(bitmap, sizeOfChars + ignore, 16);
 
-    for (j = 0; j < 8; j++)
+    for (j = 0; j < 9; j++)
     {
         bitmapAppendLeastSignificantBit(bitmap, bitmapGetBit(dictionary->sizeWords, j));
     }
