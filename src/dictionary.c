@@ -66,7 +66,7 @@ Dictionary *constructor_dictionary(char *file, char *type)
     }
     fillBits_binaryTree(getTree_list(list));
     fillDictionary(getTree_list(list), dictionary);
-    print_binaryTree(getTree_list(list));
+    // print_binaryTree(getTree_list(list));
     Destructor_binaryTree(getTree_list(list));
     destructor_list(list);
     dictionary->sizeWords = fillSizeBits(lenght, 9);
@@ -180,9 +180,10 @@ void fillBitmap(bitmap *bitmap, Dictionary *dictionary, char *type)
     }
 
     int sizeOfChars = 16 + 9 + count + (3 + typeBytes * 8) + 32;
-    int ignore = 8 - sizeOfChars % 8;
+    int ignore = 0;
+    if (sizeOfChars % 8 != 0)
+        ignore = 8 - sizeOfChars % 8;
 
-    printf("%d\n", sizeOfChars + ignore);
     fillSizeBits2(bitmap, sizeOfChars + ignore, 16);
 
     for (j = 0; j < 9; j++)

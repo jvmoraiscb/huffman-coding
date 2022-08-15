@@ -28,14 +28,16 @@ void huffman_encoder(char *file)
     bitmap *overflow = bitmapInit(50);
 
     fillBitmap(map, dictionary, fileType);
+    /*
     for (int i = 0; i < bitmapGetLength(map); i++)
     {
         printf("%d", bitmapGetBit(map, i));
     }
+    */
 
     unsigned char c;
-    FILE *file_original = fopen(file, "r");
-    FILE *file_comp = fopen(fileName, "w");
+    FILE *file_original = fopen(file, "rb");
+    FILE *file_comp = fopen(fileName, "wb");
 
     while (fread(&c, sizeof(unsigned char), 1, file_original) == 1)
     {
@@ -45,6 +47,7 @@ void huffman_encoder(char *file)
 
         if (bitmapGetLength(map) == bitmapGetMaxSize(map))
         {
+            printf("overflow\n");
             fwrite(bitmapGetContents(map), 1, bitmapGetLength(map) / 8, file_comp);
             bitmapLibera(map);
             map = bitmapInit(pow(2, 20));
@@ -58,7 +61,9 @@ void huffman_encoder(char *file)
         }
     }
 
-    int ignore = 8 - bitmapGetLength(map) % 8;
+    int ignore = 0;
+    if (bitmapGetLength(map) % 8 != 0)
+        ignore = 8 - bitmapGetLength(map) % 8;
     int i;
     for (i = 0; i < ignore; i++)
         bitmapAppendLeastSignificantBit(map, 0);
