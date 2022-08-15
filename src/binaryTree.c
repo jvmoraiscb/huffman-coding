@@ -10,13 +10,13 @@ static void printTree(BinaryTree *tree);
 struct binaryTree
 {
     int value;
-    char c;
+    unsigned char c;
     bitmap *bits;
     struct binaryTree *right;
     struct binaryTree *left;
 };
 
-BinaryTree *Constructor_binaryTreeLeaf(int value, char c)
+BinaryTree *Constructor_binaryTreeLeaf(int value, unsigned char c)
 {
     BinaryTree *new = malloc(sizeof(BinaryTree));
     new->value = value;
@@ -57,16 +57,14 @@ void print_binaryTree(BinaryTree *tree)
     if (tree != NULL)
     {
         if (tree->right == NULL && tree->left == NULL)
-            printf("%c\n", tree->c);
+            printf("--%.3d--\n", tree->c);
 
         if (tree->left != NULL)
         {
-            printf("0");
             print_binaryTree(tree->left);
         }
         if (tree->right != NULL)
         {
-            printf("1");
             print_binaryTree(tree->right);
         }
     }
@@ -114,11 +112,11 @@ static void printTree(BinaryTree *tree)
     {
         if (tree->left != NULL)
         {
-            printf("%c -- %c\n", tree->c, tree->left->c);
+            printf("arv(%c) -- arv(%c)\n", tree->c, tree->left->c);
         }
         if (tree->right != NULL)
         {
-            printf("%c -- %c\n", tree->c, tree->right->c);
+            printf("arv(%c) -- arv(%c)\n", tree->c, tree->right->c);
         }
         printTree(tree->left);
         printTree(tree->right);
@@ -130,7 +128,7 @@ int getValue_binaryTree(BinaryTree *tree)
     return tree->value;
 }
 
-char getChar_binaryTree(BinaryTree *tree)
+unsigned char getChar_binaryTree(BinaryTree *tree)
 {
     return tree->c;
 }

@@ -8,7 +8,7 @@ void start_encoder(char *file);
 
 int main(int argc, char *argv[])
 {
-    if (argc != 3)
+    if (argc < 3)
     {
         printf("ERRO!\n");
         return 1;

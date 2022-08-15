@@ -29,11 +29,11 @@ void huffman_encoder(char *file)
 
     fillBitmap(map, dictionary, fileType);
 
-    char c;
+    unsigned char c;
     FILE *file_original = fopen(file, "r");
     FILE *file_comp = fopen(fileName, "w");
 
-    while (fscanf(file_original, "%c", &c) == 1)
+    while (fread(&c, sizeof(unsigned char), 1, file_original) == 1)
     {
         bitmap *c_bits = getCharFromDictionary(dictionary, c);
         addBits(map, overflow, c_bits);

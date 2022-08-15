@@ -11,7 +11,7 @@ C_FILES        = $(wildcard $(SRC)/*.c)
 OBJ_PATH_FILES = $(patsubst $(SRC)%,$(OBJ)%,$(C_FILES))
 OBJ_FILES      = $(patsubst %.c,%.o,$(OBJ_PATH_FILES))
 
-all: create_dir $(OBJ_FILES) create_final_progam
+all: clean create_dir $(OBJ_FILES) create_final_progam
 # test: clean all run
 
 create_final_progam: $(BIN)/$(NAME_PROGRAM)
@@ -33,7 +33,7 @@ $(BIN)/%:
 
 # create all needed directories
 create_dir: 
-	@ echo "Creating $(OBJ) directory...\n"
+	@ echo "Creating $(OBJ) directory..."
 	@ mkdir $(OBJ)
 	@ echo "Creating $(BIN) directory..."
 	@ mkdir $(BIN)

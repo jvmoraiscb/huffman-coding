@@ -6,15 +6,15 @@
 #include <string.h>
 #include <math.h>
 
-static bitmap *addBinCharPad(char c);
-static int getIntFromBits(bitmap *bitmap, unsigned int start, unsigned int bits);
+static bitmap *addBinCharPad(unsigned char c);
+static unsigned int getIntFromBits(bitmap *bitmap, unsigned int start, unsigned int bits);
 static void addBits(bitmap *map, bitmap *overflow, bitmap *c);
-static int writeText(FILE *file, bitmap *map, int leafs, int leafsMax);
+static int writeText(FILE *file, bitmap *map, BinaryTree *tree_aux, BinaryTree *tree, int leafs, int leafsMax);
 
 void huffman_decoder(char *file)
 {
     int i, j;
-    char fileType[10], fileName[100];
+    char fileName[100];
 
     char fileTemp[100];
     strcpy(fileTemp, file);
@@ -26,14 +26,13 @@ void huffman_decoder(char *file)
     bitmap *map = bitmapInit(pow(2, 20)); // at least 1mb to read
     bitmap *overflow = bitmapInit(50);
 
-    FILE *file_comp = fopen(file, "r");
+    FILE *file_comp = fopen(file, "rb");
     FILE *file_original = NULL;
-
-    char c;
+    unsigned char c;
     bitmap *dictionarySize = bitmapInit(16);
     for (i = 0; i < 2; i++)
     {
-        fscanf(file_comp, "%c", &c);
+        fread(&c, sizeof(unsigned char), 1, file_comp);
         bitmap *c_bits = addBinCharPad(c);
         addBits(dictionarySize, NULL, c_bits);
         bitmapLibera(c_bits);
@@ -43,12 +42,11 @@ void huffman_decoder(char *file)
     // printf("--%d--\n", bitmapGetMaxSize(dictionary));
     for (i = 0; i < (dictionarySizeInt - 16) / 8; i++)
     {
-        fscanf(file_comp, "%c", &c);
+        fread(&c, sizeof(unsigned char), 1, file_comp);
         bitmap *c_bits = addBinCharPad(c);
         addBits(dictionary, NULL, c_bits);
         bitmapLibera(c_bits);
     }
-
     BinaryTree *tree = Constructor_binaryTree(0, NULL, NULL);
     BinaryTree *tree_aux = tree;
     int treeSizeInt = getIntFromBits(dictionary, 0, 8);
@@ -103,6 +101,8 @@ void huffman_decoder(char *file)
         position += 8;
         // printf("%d\n", position);
     }
+    // print_binaryTree(tree);
+
     strcat(fileName, ".");
     int sizeBitsType = getIntFromBits(dictionary, position, 3);
     position += 3;
@@ -116,7 +116,8 @@ void huffman_decoder(char *file)
     file_original = fopen(fileName, "w");
 
     int leafs = 0, leafsMax = getIntFromBits(dictionary, position, 32);
-    while (fscanf(file_comp, "%c", &c) == 1)
+    tree_aux = tree;
+    while (fread(&c, sizeof(unsigned char), 1, file_comp) == 1)
     {
         bitmap *c_bits = addBinCharPad(c);
         addBits(map, overflow, c_bits);
@@ -124,7 +125,7 @@ void huffman_decoder(char *file)
 
         if (bitmapGetLength(map) == bitmapGetMaxSize(map))
         {
-            writeText(file_original, map, leafs, leafsMax);
+            leafs = writeText(file_original, map, tree_aux, tree, leafs, leafsMax);
             bitmapLibera(map);
             map = bitmapInit(pow(2, 20));
             int i;
@@ -136,11 +137,14 @@ void huffman_decoder(char *file)
             overflow = bitmapInit(50);
         }
     }
+    leafs = writeText(file_original, map, tree_aux, tree, leafs, leafsMax);
+    bitmapLibera(map);
+    bitmapLibera(overflow);
     fclose(file_comp);
     fclose(file_original);
 }
 
-static bitmap *addBinCharPad(char c)
+static bitmap *addBinCharPad(unsigned char c)
 {
     bitmap *bitmap = bitmapInit(8);
     for (int i = 7; i >= 0; --i)
@@ -162,9 +166,10 @@ static void addBits(bitmap *map, bitmap *overflow, bitmap *c)
     }
 }
 
-static int getIntFromBits(bitmap *bitmap, unsigned int start, unsigned int bits)
+static unsigned int getIntFromBits(bitmap *bitmap, unsigned int start, unsigned int bits)
 {
-    int count = 0, i = 0, j = 0;
+    unsigned int count = 0;
+    int i = 0, j = 0;
     for (i = bits - 1; i >= 0; i--)
     {
         if (bitmapGetBit(bitmap, j + start) == 1)
@@ -176,6 +181,26 @@ static int getIntFromBits(bitmap *bitmap, unsigned int start, unsigned int bits)
     return count;
 }
 
-static int writeText(FILE *file, bitmap *map, int leafs, int leafsMax)
+static int writeText(FILE *file, bitmap *map, BinaryTree *tree_aux, BinaryTree *tree, int leafs, int leafsMax)
 {
+    int i;
+    for (i = 0; i < bitmapGetLength(map); i++)
+    {
+        if (bitmapGetBit(map, i) == 1)
+        {
+            tree_aux = getRight_binaryTree(tree_aux);
+        }
+        else
+        {
+            tree_aux = getLeft_binaryTree(tree_aux);
+        }
+        if (getValue_binaryTree(tree_aux) == 1)
+        {
+            if (leafs < leafsMax)
+                fprintf(file, "%c", getChar_binaryTree(tree_aux));
+            leafs++;
+            tree_aux = tree;
+        }
+    }
+    return leafs;
 }

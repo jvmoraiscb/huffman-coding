@@ -22,7 +22,7 @@ struct dictionary
 };
 
 static void getText(int *ascii, char *file);
-static void addBinCharPad(char c, bitmap *bitmap);
+static void addBinCharPad(unsigned char c, bitmap *bitmap);
 static void fillDictionary(BinaryTree *tree, Dictionary *dictionary);
 static bitmap *fillSizeBits(unsigned int sizeBits, unsigned int bits);
 static void fillSizeBits2(bitmap *bitmap, unsigned int sizeBits, unsigned int bits);
@@ -30,10 +30,12 @@ void fillBitmap(bitmap *bitmap, Dictionary *dictionary, char *type);
 
 Dictionary *constructor_dictionary(char *file, char *type)
 {
+    printf("1\n");
     Dictionary *dictionary = malloc(sizeof(Dictionary));
 
     int ascii[MAX_WORDS] = {0};
     getText(ascii, file);
+    printf("2\n");
 
     List *list = constructor_list();
     int i, lenght = 0;
@@ -50,6 +52,7 @@ Dictionary *constructor_dictionary(char *file, char *type)
             numberChars = numberChars + ascii[i];
         }
     }
+    printf("3\n");
 
     while (last_list(list) == 0)
     {
@@ -64,14 +67,21 @@ Dictionary *constructor_dictionary(char *file, char *type)
         list = remove_list(list, first);
         list = remove_list(list, second);
     }
+    printf("4\n");
 
     print_binaryTree(getTree_list(list));
     fillBits_binaryTree(getTree_list(list));
+    print_binaryTree(getTree_list(list));
+    printf("5\n");
     fillDictionary(getTree_list(list), dictionary);
+    printf("6\n");
     Destructor_binaryTree(getTree_list(list));
+    printf("7\n");
     destructor_list(list);
+    printf("8\n");
     dictionary->sizeWords = fillSizeBits(lenght, 8);
     dictionary->sizeFile = fillSizeBits(numberChars, 32);
+    printf("9\n");
 
     return dictionary;
 }
@@ -93,7 +103,7 @@ void destructor_dictionary(Dictionary *dictionary)
     free(dictionary);
 }
 
-bitmap *getCharFromDictionary(Dictionary *dictionary, char c)
+bitmap *getCharFromDictionary(Dictionary *dictionary, unsigned char c)
 {
     bitmap *map = bitmapInit(bitmapGetLength(dictionary->words[(int)c].bits));
     int i;
@@ -106,33 +116,36 @@ bitmap *getCharFromDictionary(Dictionary *dictionary, char c)
 
 static void getText(int *ascii, char *file)
 {
-    FILE *text = fopen(file, "r");
-    char c;
-    while (fscanf(text, "%c", &c) == 1)
+    FILE *text = fopen(file, "rb");
+    unsigned char c;
+    while (fread(&c, sizeof(unsigned char), 1, text))
     {
-        ascii[(int)c]++;
+        ascii[(unsigned int)c]++;
     }
     fclose(text);
 }
 
 static void fillDictionary(BinaryTree *tree, Dictionary *dictionary)
 {
+    print_binaryTree(tree);
     if (tree != NULL)
     {
-        if (getLeft_binaryTree(tree) == NULL && getRight_binaryTree(tree) == NULL)
+        printf("5.1\n");
+        printf("((%.3d))\n", getChar_binaryTree(tree));
+        if (getLeft_binaryTree(tree) == NULL && getRight_binaryTree(tree) == NULL && getChar_binaryTree(tree) >= 0)
         {
+            printf("5.1.1\n");
             bitmap *sizeBits = fillSizeBits(bitmapGetLength(getBits_binaryTree(tree)), 5);
-
-            dictionary->words[(int)getChar_binaryTree(tree)].sizeBits = sizeBits;
-            dictionary->words[(int)getChar_binaryTree(tree)].c = getChar_binaryTree(tree);
-            dictionary->words[(int)getChar_binaryTree(tree)].bits = getBits_binaryTree(tree);
+            printf("5.1.2\n");
+            dictionary->words[(unsigned int)getChar_binaryTree(tree)].sizeBits = sizeBits;
+            printf("5.1.3\n");
+            dictionary->words[(unsigned int)getChar_binaryTree(tree)].c = getChar_binaryTree(tree);
+            printf("5.1.4\n");
+            dictionary->words[(unsigned int)getChar_binaryTree(tree)].bits = getBits_binaryTree(tree);
         }
-        if (getLeft_binaryTree(tree) != NULL)
+        else
         {
             fillDictionary(getLeft_binaryTree(tree), dictionary);
-        }
-        if (getRight_binaryTree(tree) != NULL)
-        {
             fillDictionary(getRight_binaryTree(tree), dictionary);
         }
     }
@@ -222,7 +235,7 @@ void fillBitmap(bitmap *bitmap, Dictionary *dictionary, char *type)
         bitmapAppendLeastSignificantBit(bitmap, 0);
 }
 
-static void addBinCharPad(char c, bitmap *bitmap)
+static void addBinCharPad(unsigned char c, bitmap *bitmap)
 {
     for (int i = 7; i >= 0; --i)
     {
