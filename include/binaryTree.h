@@ -7,6 +7,8 @@ typedef struct binaryTree BinaryTree;
 
 BinaryTree *Constructor_binaryTreeLeaf(int value, unsigned char c);
 BinaryTree *Constructor_binaryTree(int value, BinaryTree *left, BinaryTree *right);
+BinaryTree *Constructor_binaryTreeLeafWithoutBits(int value, unsigned char c);
+BinaryTree *Constructor_binaryTreeWithotBits(int value, BinaryTree *left, BinaryTree *right);
 BinaryTree *Destructor_binaryTree(BinaryTree *tree);
 int getValue_binaryTree(BinaryTree *tree);
 unsigned char getChar_binaryTree(BinaryTree *tree);

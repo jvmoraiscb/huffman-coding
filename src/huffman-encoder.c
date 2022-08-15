@@ -47,7 +47,6 @@ void huffman_encoder(char *file)
 
         if (bitmapGetLength(map) == bitmapGetMaxSize(map))
         {
-            printf("overflow\n");
             fwrite(bitmapGetContents(map), 1, bitmapGetLength(map) / 8, file_comp);
             bitmapLibera(map);
             map = bitmapInit(pow(2, 20));

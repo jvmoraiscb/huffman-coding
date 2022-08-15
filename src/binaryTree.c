@@ -36,6 +36,26 @@ BinaryTree *Constructor_binaryTree(int value, BinaryTree *left, BinaryTree *righ
     new->left = left;
     return new;
 }
+BinaryTree *Constructor_binaryTreeLeafWithoutBits(int value, unsigned char c)
+{
+    BinaryTree *new = malloc(sizeof(BinaryTree));
+    new->value = value;
+    new->c = c;
+    new->bits = NULL;
+    new->right = NULL;
+    new->left = NULL;
+    return new;
+}
+BinaryTree *Constructor_binaryTreeWithotBits(int value, BinaryTree *left, BinaryTree *right)
+{
+    BinaryTree *new = malloc(sizeof(BinaryTree));
+    new->value = value;
+    new->c = '-';
+    new->bits = NULL;
+    new->right = right;
+    new->left = left;
+    return new;
+}
 BinaryTree *Destructor_binaryTree(BinaryTree *tree)
 {
     if (tree != NULL)

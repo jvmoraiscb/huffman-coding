@@ -10,7 +10,7 @@ int main(int argc, char *argv[])
 {
     if (argc < 3)
     {
-        printf("ERRO!\n");
+        printf("ERROR: UNSPECIFIED FILE OR MODE\n");
         return 1;
     }
 
