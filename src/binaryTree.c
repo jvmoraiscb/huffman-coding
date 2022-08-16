@@ -56,6 +56,18 @@ BinaryTree *Constructor_binaryTreeWithotBits(int value, BinaryTree *left, Binary
     new->left = left;
     return new;
 }
+BinaryTree *Destructor_binaryTreeWithoutBits(BinaryTree *tree)
+{
+    if (tree != NULL)
+    {
+        if (tree->left != NULL)
+            Destructor_binaryTreeWithoutBits(tree->left);
+        if (tree->right != NULL)
+            Destructor_binaryTreeWithoutBits(tree->right);
+        free(tree);
+    }
+    return NULL;
+}
 BinaryTree *Destructor_binaryTree(BinaryTree *tree)
 {
     if (tree != NULL)

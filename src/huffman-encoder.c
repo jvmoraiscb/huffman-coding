@@ -60,9 +60,7 @@ void huffman_encoder(char *file)
         }
     }
 
-    int ignore = 0;
-    if (bitmapGetLength(map) % 8 != 0)
-        ignore = 8 - bitmapGetLength(map) % 8;
+    int ignore = 8 - bitmapGetLength(map) % 8;
     int i;
     for (i = 0; i < ignore; i++)
         bitmapAppendLeastSignificantBit(map, 0);

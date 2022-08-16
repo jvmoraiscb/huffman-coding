@@ -10,6 +10,7 @@ BinaryTree *Constructor_binaryTree(int value, BinaryTree *left, BinaryTree *righ
 BinaryTree *Constructor_binaryTreeLeafWithoutBits(int value, unsigned char c);
 BinaryTree *Constructor_binaryTreeWithotBits(int value, BinaryTree *left, BinaryTree *right);
 BinaryTree *Destructor_binaryTree(BinaryTree *tree);
+BinaryTree *Destructor_binaryTreeWithoutBits(BinaryTree *tree);
 int getValue_binaryTree(BinaryTree *tree);
 unsigned char getChar_binaryTree(BinaryTree *tree);
 bitmap *getBits_binaryTree(BinaryTree *tree);

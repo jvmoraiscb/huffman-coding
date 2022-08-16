@@ -43,14 +43,14 @@ create_dir:
 #	@ echo "Running $(BIN)/$(NAME_PROGRAM)"
 #	@ ./$(BIN)/$(NAME_PROGRAM) $(file)
 
-encoder:
+compacta:
 	@ make clean
 	@ make
 	@ echo "Running $(BIN)/$(NAME_PROGRAM)"
 	@ clear
 	@ ./$(BIN)/$(NAME_PROGRAM) -encoder $(file)
 
-decoder:
+descompacta:
 	@ make clean
 	@ make
 	@ echo "Running $(BIN)/$(NAME_PROGRAM)"

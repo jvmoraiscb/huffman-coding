@@ -180,9 +180,7 @@ void fillBitmap(bitmap *bitmap, Dictionary *dictionary, char *type)
     }
 
     int sizeOfChars = 16 + 9 + count + (3 + typeBytes * 8) + 32;
-    int ignore = 0;
-    if (sizeOfChars % 8 != 0)
-        ignore = 8 - sizeOfChars % 8;
+    int ignore = 8 - sizeOfChars % 8;
 
     fillSizeBits2(bitmap, sizeOfChars + ignore, 16);
 
