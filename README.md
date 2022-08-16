@@ -8,7 +8,7 @@ Desenvolvido por: João Victor Morais e Talles Weiler
 
 ## Guia de utilização do programa:
 
-O programa consiste em três pastas principais:
+O programa consiste em duas pastas principais:
 
 - <b>include/</b> -> possui os headers de todas as bibliotecas implementadas
 - <b>src/</b> -> possui os arquivos-fonte de todas as bibliotecas implementadas e o arquivo principal (main.c)
@@ -16,8 +16,9 @@ O programa consiste em três pastas principais:
 Toda a utilização do programa é feita através de um makefile, onde seus principais comandos são:
 
 - <b>"make compacta file=x"</b> -> A string 'x' representa o caminho até o arquivo que será compactado (ex: "make compacta file=tests/bible.txt" efetua a compactação do arquivo tests/bible.txt). Este comando apaga os arquivos temporários anteriores e cria as pastas temporárias obj/ (onde ficam os arquivos-objeto) e bin/ (onde fica o arquivo executável). Após isso, compila o programa, roda e gera o arquivo compactado.
-- <b>"make descompacta file=x"</b> -> A string 'x' representa o caminho até o arquivo que será descompactado (ex: "make descompacta file=tests/bible..comp" efetua a descompactação do arquivo tests/bible.comp). Este comando segue o mesmo padrão do comando anterior.
-- <b>"make clean"</b> -> exclui todas os arquivos temporários
+- <b>"make descompacta file=x"</b> -> A string 'x' representa o caminho até o arquivo que será descompactado (ex: "make descompacta file=tests/bible.comp" efetua a descompactação do arquivo tests/bible.comp). Este comando segue o mesmo padrão do comando anterior.
+- <b>"make valgrind mode=x file=y"</b> -> A string 'x' representa o modo e 'y' a string até o arquivo que será compactado/descompactado (ex: make valgrind mode=-encoder file=tests/bible.txt). Este comando executa o programa em mode de compactação/descompactação utilizando o valgrind, para verificar possíveis vazamentos de memória.
+- <b>"make clean"</b> -> exclui todos os arquivos temporários
 
 ## Funcionamento do programa:
 
@@ -35,7 +36,9 @@ No caso da descompactação, o programa primeiramente reconstrói o dicionário 
 
 ## Implementação do programa e conclusão:
 
-Como forma de autoavaliação, percebemos que o código não ficou bom, ele utiliza excessivos mallocs e muita memória ram, e não compacta corretamente alguns arquivos
+Como forma de autoavaliação, percebemos que o código utilizou muita memória desnecessária, através dos excessivos mallocs, porém infelizmente não tivemos tempo para refazer a lógica do programa. Mas, desconsiderando esse fato, o programa consegue compactar e descompactar arquivos sem perder nenhuma informação.
+
+A maior dificuldade do trabalho foi a manipulação dos binários, mas felizmente o bitmap cedido pelo professor João Paulo auxiliou no processo.
 
 ## Bibliografia:
 
